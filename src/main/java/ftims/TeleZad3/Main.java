@@ -6,10 +6,14 @@ public class Main
 {
     public static void main(String[] args)
     {
-        SerialPort[] ports = SerialPort.getCommPorts();
+        String portName = "COM1";
         
-        for (SerialPort port : ports) {
-            System.out.println(port.getSystemPortName());
+        PortSettings settings = new PortSettings(9600, 8, PortSettings.Parity.EVEN_PARITY,
+                PortSettings.StopBits.ONE_STOP_BIT, PortSettings.FlowControl.FLOW_CONTROL_DISABLED);
+        
+        PortManager manager = new PortManager(portName, settings);
+        if (manager.openPort()) {
+            System.out.println("port opened");
         }
     }
 }
