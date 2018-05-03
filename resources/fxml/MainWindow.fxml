@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox minHeight="400.0" minWidth="720.0" prefHeight="400.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefWidth="720.0" VBox.vgrow="ALWAYS">
+      <children>
+            <SplitPane fx:id="chatSettingsSplit" dividerPositions="0.7" layoutX="13.0" layoutY="14.0" prefHeight="350.0" prefWidth="613.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <SplitPane dividerPositions="0.8" layoutX="6.0" orientation="VERTICAL" prefHeight="348.0" prefWidth="428.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <ListView fx:id="chatView" layoutX="14.0" layoutY="14.0" prefHeight="297.0" prefWidth="488.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <TextField fx:id="chatInputField" alignment="TOP_LEFT" layoutX="10.0" layoutY="21.0" prefHeight="26.0" prefWidth="404.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="74.0" />
+                                    <Button fx:id="chatSendButton" layoutX="358.0" layoutY="18.0" mnemonicParsing="false" text="Wyślij" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="10.0" />
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="portSettings" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Ustawienia Portu" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                        <Button fx:id="connectionSettings" layoutX="14.0" layoutY="57.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Ustawienia Połączenia" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                        <Button fx:id="connectButton" layoutX="14.0" layoutY="174.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Połącz" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                        <Label fx:id="commandLabel" layoutX="14.0" layoutY="260.0" text="Komendy:" AnchorPane.leftAnchor="15.0" />
+                        <TextField fx:id="commandField" layoutX="13.0" layoutY="278.0" prefHeight="26.0" prefWidth="159.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="32.0" />
+                        <Button fx:id="commandSendButton" graphicTextGap="1.0" layoutX="179.0" layoutY="278.0" minHeight="10.0" minWidth="25.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="&gt;" textAlignment="CENTER" AnchorPane.rightAnchor="2.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+      </children>
+      </AnchorPane>
+  </children>
+</VBox>
