@@ -1,5 +1,8 @@
 package ftims.TeleZad3;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import com.fazecast.jSerialComm.SerialPort;
 
 public class PortSettings {
@@ -13,6 +16,16 @@ public class PortSettings {
         private final int value;
         private Parity(int id) { this.value = id; }
         public int getValue() { return value; }
+        
+        public static ArrayList<Parity> getListOfValues() {
+            ArrayList<Parity> list = new ArrayList<Parity>(EnumSet.allOf(Parity.class));
+            return list;
+        }
+        
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
     
     public enum StopBits {
@@ -23,6 +36,16 @@ public class PortSettings {
         private final int value;
         private StopBits(int id) { this.value = id; }
         public int getValue() { return value; }
+        
+        public static ArrayList<StopBits> getListOfValues() {
+            ArrayList<StopBits> list = new ArrayList<StopBits>(EnumSet.allOf(StopBits.class));
+            return list;
+        }
+        
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
     
     public enum FlowControl {
@@ -39,16 +62,28 @@ public class PortSettings {
         private final int value;
         private FlowControl(int id) { this.value = id; }
         public int getValue() { return value; }
+        
+        public static ArrayList<FlowControl> getListOfValues() {
+            ArrayList<FlowControl> list = new ArrayList<FlowControl>(EnumSet.allOf(FlowControl.class));
+            return list;
+        }
+        
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
     
+    private String portName;
     private int baudRate;
     private int numberOfDataBits;
     private Parity parity;
     private StopBits stopBits;
     private FlowControl flowControl;
     
-    PortSettings(int baudRate, int numberOfDataBits, Parity parity,
+    PortSettings(String portName, int baudRate, int numberOfDataBits, Parity parity,
                  StopBits stopBits, FlowControl flowControl) {
+        this.portName = portName;
         this.baudRate = baudRate;
         this.numberOfDataBits = numberOfDataBits;
         this.parity = parity;          
@@ -56,6 +91,10 @@ public class PortSettings {
         this.flowControl = flowControl;
     }
 
+    public String getPortName() {
+        return portName;
+    }
+    
     public int getBaudRate() {
         return baudRate;
     }

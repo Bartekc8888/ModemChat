@@ -1,12 +1,14 @@
 package ftims.TeleZad3;
 
+import java.io.IOException;
+
 import com.fazecast.jSerialComm.SerialPort;
 
 public class PortManager {
     SerialPort port;
     
-    PortManager(String portName, PortSettings settings) {
-        port = findPort(portName);
+    PortManager(PortSettings settings) throws IOException {
+        port = findPort(settings.getPortName());
         
         port.setComPortParameters(settings.getBaudRate(), settings.getNumberOfDataBits(),
                                   settings.getStopBits().getValue(), settings.getParity().getValue());
@@ -18,7 +20,11 @@ public class PortManager {
         return port.openPort();
     }
     
-    private SerialPort findPort(String portName) {
+    public void closePort() {
+        port.closePort();
+    }
+    
+    private SerialPort findPort(String portName) throws IOException {
         SerialPort[] ports = SerialPort.getCommPorts();
         
         SerialPort chosenPort = null;
@@ -30,7 +36,7 @@ public class PortManager {
         }
         
         if (chosenPort == null) {
-            throw new RuntimeException("Port \"" + portName + "\" not found");
+            throw new IOException("Port \"" + portName + "\" not found");
         }
         
         return chosenPort;

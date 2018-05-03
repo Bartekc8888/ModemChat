@@ -1,10 +1,10 @@
 package ftims.TeleZad3;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,31 +16,71 @@ public class MainApp extends Application
     private static final String portSettingsWindowFXML = "fxml/PortSettingsWindow.fxml";
     private static final String connectionSettingsWindowFXML = "fxml/ConnectionSettingsWindow.fxml";
     
+    private MainWindowController mainWindowController;
+    private PortSettingsWindow portSettingsWindow;
+    
+    private PortSettings portSettings;
+    PortManager portManager;
+    
     public static void main(String[] args)
     {
         launch(args);
-        
-        //String portName = "COM1";
-        //
-        //PortSettings settings = new PortSettings(9600, 8, PortSettings.Parity.EVEN_PARITY,
-        //        PortSettings.StopBits.ONE_STOP_BIT, PortSettings.FlowControl.FLOW_CONTROL_RTS_CTS);
-        //
-        //PortManager manager = new PortManager(portName, settings);
-        //if (manager.openPort()) {
-        //    System.out.println("port opened");
-        //}
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         URL url = getClass().getClassLoader().getResource(mainWindowFXML);
-        Parent root = FXMLLoader.load(url);
+        FXMLLoader loader = new FXMLLoader(url);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         
-        primaryStage.setTitle("JavaFX");
+        mainWindowController = loader.getController();
+        initMainWindowEvents(mainWindowController);
+        
+        portSettingsWindow = new PortSettingsWindow(portSettingsWindowFXML, this);
+        portSettings = portSettingsWindow.getCurrentSettings();
+        
+        primaryStage.setTitle("ModemChat");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(720);
         primaryStage.setMinHeight(400);
         primaryStage.show();
+    }
+    
+    public void setNewSettings(PortSettings settings) {
+        portSettings = settings;
+    }
+    
+    private void initMainWindowEvents(MainWindowController controller) {
+        controller.setPortSettingsButtonEvent(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portSettingsWindow.showWindow();
+            }
+        });
+        
+        controller.setConnectButtonEvent(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                connectPort();
+            }
+        });
+    }
+    
+    private void connectPort() {
+        if (portManager != null) {
+            portManager.closePort();
+            portManager = null;
+        }
+        
+        try {
+            portManager = new PortManager(portSettings);
+            
+            if (portManager.openPort()) {
+                System.out.println("port opened");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
