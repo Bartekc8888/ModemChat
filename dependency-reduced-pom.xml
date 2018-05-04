@@ -19,7 +19,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>Main</mainClass>
+              <mainClass>ftims.TeleZad3.MainApp</mainClass>
             </manifest>
           </archive>
         </configuration>

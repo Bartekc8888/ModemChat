@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PortSettingsWindow {
@@ -29,6 +30,8 @@ public class PortSettingsWindow {
         settingsStage = new Stage();
         settingsStage.setTitle("Ustawienia portu");
         settingsStage.setScene(scene);
+        settingsStage.initOwner(parent.getStage());
+        settingsStage.initModality(Modality.APPLICATION_MODAL);
         settingsStage.setMinWidth(400);
         settingsStage.setMinHeight(300);
     }

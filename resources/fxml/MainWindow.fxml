@@ -25,7 +25,7 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <TextField fx:id="chatInputField" alignment="TOP_LEFT" layoutX="10.0" layoutY="21.0" prefHeight="26.0" prefWidth="404.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="74.0" />
+                                    <TextField fx:id="chatInputField" alignment="TOP_LEFT" layoutX="10.0" layoutY="21.0" onAction="#chatInputFieldOnEnter" prefHeight="26.0" prefWidth="404.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="74.0" />
                                     <Button fx:id="chatSendButton" layoutX="358.0" layoutY="18.0" mnemonicParsing="false" text="Wyślij" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="10.0" />
                                  </children>
                               </AnchorPane>
