@@ -15,7 +15,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
-public class PortSettingsController {
+public class PortSettingsController implements Initializable {
     @FXML
     private Button okButton;
     
@@ -95,5 +95,10 @@ public class PortSettingsController {
         ObservableList<PortSettings.FlowControl> flowControl = FXCollections.observableArrayList(PortSettings.FlowControl.getListOfValues());
         flowControlComboBox.setItems(flowControl);
         flowControlComboBox.getSelectionModel().select(1);
+    }
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initialize();
     }
 }

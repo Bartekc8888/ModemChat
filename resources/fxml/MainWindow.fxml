@@ -37,10 +37,11 @@
                      <children>
                         <Button fx:id="portSettings" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Ustawienia Portu" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                         <Button fx:id="connectionSettings" layoutX="14.0" layoutY="57.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Ustawienia Połączenia" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
-                        <Button fx:id="connectButton" layoutX="14.0" layoutY="174.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Połącz" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+                        <Button fx:id="connectButton" layoutX="14.0" layoutY="174.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Połącz z modemem" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                         <Label fx:id="commandLabel" layoutX="14.0" layoutY="260.0" text="Komendy:" AnchorPane.leftAnchor="15.0" />
                         <TextField fx:id="commandField" layoutX="13.0" layoutY="278.0" prefHeight="26.0" prefWidth="159.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="32.0" />
                         <Button fx:id="commandSendButton" graphicTextGap="1.0" layoutX="179.0" layoutY="278.0" minHeight="10.0" minWidth="25.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="&gt;" textAlignment="CENTER" AnchorPane.rightAnchor="2.0" />
+                        <Button fx:id="callButton" layoutX="14.0" layoutY="215.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Zadzwoń" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                      </children>
                   </AnchorPane>
               </items>

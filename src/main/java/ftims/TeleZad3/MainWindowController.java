@@ -31,6 +31,9 @@ public class MainWindowController implements Initializable {
     private Button connectButton;
     
     @FXML
+    private Button callButton;
+    
+    @FXML
     private TextField commandField;
     
     @FXML
@@ -62,9 +65,17 @@ public class MainWindowController implements Initializable {
     
     public void setConnectionButtonStatus(boolean isPortOpen) {
         if (isPortOpen) {
-            connectButton.setText("Rozłącz");
+            connectButton.setText("Rozłącz modemem");
         } else {
-            connectButton.setText("Połącz");
+            connectButton.setText("Połącz z modemem");
+        }
+    }
+    
+    public void setCallButtonStatus(boolean isCallOngoing) {
+        if (isCallOngoing) {
+            callButton.setText("Rozłącz");
+        } else {
+            callButton.setText("Zadzwoń");
         }
     }
     
@@ -72,11 +83,19 @@ public class MainWindowController implements Initializable {
         portSettings.setOnAction(eventHandler);
     }
     
+    public void setConnectionSettingsButtonEvent(EventHandler<ActionEvent> eventHandler) {
+        connectionSettings.setOnAction(eventHandler);
+    }
+    
     public void setConnectButtonEvent(EventHandler<ActionEvent> eventHandler) {
         connectButton.setOnAction(eventHandler);
     }
     
-    public void setChatSendButtonButtonEvent(MainApp messageHandler) {
+    public void setCallButtonEvent(EventHandler<ActionEvent> eventHandler) {
+        callButton.setOnAction(eventHandler);
+    }
+    
+    public void setChatSendButtonEvent(MainApp messageHandler) {
         chatSendButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -90,7 +109,22 @@ public class MainWindowController implements Initializable {
         });
     }
 
+    public void setCommandSendButtonEvent(MainApp messageHandler) {
+        commandSendButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String commandToSend = commandField.getText();
+                commandField.setText("");
+                
+                if (!commandToSend.isEmpty()) {
+                    messageHandler.sendCommand(commandToSend);
+                }
+            }
+        });
+    }
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initialize();
     }
 }
