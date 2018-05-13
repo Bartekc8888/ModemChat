@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox minHeight="400.0" minWidth="720.0" prefHeight="400.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ftims.TeleZad3.MainWindowController">
+<VBox minHeight="400.0" minWidth="720.0" prefHeight="400.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ftims.TeleZad3.MainWindowController">
   <children>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefWidth="720.0" VBox.vgrow="ALWAYS">
       <children>
@@ -39,7 +39,7 @@
                         <Button fx:id="connectionSettings" layoutX="14.0" layoutY="57.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Ustawienia Połączenia" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                         <Button fx:id="connectButton" layoutX="14.0" layoutY="174.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Połącz z modemem" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                         <Label fx:id="commandLabel" layoutX="14.0" layoutY="260.0" text="Komendy:" AnchorPane.leftAnchor="15.0" />
-                        <TextField fx:id="commandField" layoutX="13.0" layoutY="278.0" prefHeight="26.0" prefWidth="159.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="32.0" />
+                        <TextField fx:id="commandField" layoutX="13.0" layoutY="278.0" onAction="#commandFieldOnEnter" prefHeight="26.0" prefWidth="159.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="32.0" />
                         <Button fx:id="commandSendButton" graphicTextGap="1.0" layoutX="179.0" layoutY="278.0" minHeight="10.0" minWidth="25.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="&gt;" textAlignment="CENTER" AnchorPane.rightAnchor="2.0" />
                         <Button fx:id="callButton" layoutX="14.0" layoutY="215.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="150.0" text="Zadzwoń" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
                      </children>

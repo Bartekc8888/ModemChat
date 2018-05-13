@@ -49,6 +49,11 @@ public class MainWindowController implements Initializable {
         chatSendButton.fire();
     }
     
+    @FXML
+    public void commandFieldOnEnter(ActionEvent event){
+        commandSendButton.fire();
+    }
+    
     public void addTextToBoard(boolean isOwnMessage, String message) {
         if (message.isEmpty()) {
             return;
