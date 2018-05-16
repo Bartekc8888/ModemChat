@@ -23,6 +23,8 @@ public class MainApp extends Application
     private static final String portSettingsWindowFXML = "fxml/PortSettingsWindow.fxml";
     private static final String connectionSettingsWindowFXML = "fxml/ConnectionSettingsWindow.fxml";
     
+    private static final String INIT_STRING = "ATM0E0Q0V1S37=8N0";
+    
     private Stage primaryStage;
     
     private MainWindowController mainWindowController;
@@ -147,6 +149,10 @@ public class MainApp extends Application
             public void run() {
                 connectionButtonState = isOpen;
                 mainWindowController.setConnectionButtonStatus(isOpen);
+                
+                if (isOpen) {
+                    sendCommand(INIT_STRING);
+                }
             }
         });
     }

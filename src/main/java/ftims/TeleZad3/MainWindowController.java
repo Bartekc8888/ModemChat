@@ -8,12 +8,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 public class MainWindowController implements Initializable {
     @FXML
-    private ListView chatView;
+    private ListView<String> chatView;
     
     @FXML
     private TextField chatInputField;
@@ -42,6 +45,22 @@ public class MainWindowController implements Initializable {
     @FXML
     public void initialize() {
         System.out.println("mainWindowContrInit");
+        
+        chatView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(final ListView<String> list) {
+                return new ListCell<String>() {
+                    {
+                        Text text = new Text();
+                        text.wrappingWidthProperty().bind(list.widthProperty().subtract(15));
+                        text.textProperty().bind(itemProperty());
+
+                        setPrefWidth(0);
+                        setGraphic(text);
+                    }
+                };
+            }
+        });
     }
     
     @FXML

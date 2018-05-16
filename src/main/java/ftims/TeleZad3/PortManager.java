@@ -1,10 +1,16 @@
 package ftims.TeleZad3;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -15,12 +21,14 @@ public class PortManager implements Runnable {
     private final static String INCOMING_CONNECTION = "RING";
     private final static String PHONE_CALL_ESTABLISHED = "CONNECT";
     private final static String CALL_DROPPED = "NO CARRIER";
+    private final static String CONNECT_CMD_FAILED = "BUSY";
     private final static String MODEM_NORMAL_RESPONSE = "OK";
     private final static String MODEM_ERROR_RESPONSE = "ERROR";
     
     private final static String END_MESSAGE_SEQUENCE = "!*#";
     private final static String CARRIAGE_CYPHER = "\\@r";
     private final static String LINE_FEED_CYPHER = "\\@n";
+    private final static String CMD_CYPHER = "A_T";
     
     private String receivedMessageBuffer = "";
     private String receivedResponseBuffer = "";
@@ -29,6 +37,7 @@ public class PortManager implements Runnable {
     private MainApp parent;
     
     private boolean incomingConnection = false;
+    private boolean skipingEchoInProgress = false;
     private enum ResponseState { 
         None, FirstCR, FirstLF, SecondCR, SecondLF {
             @Override
@@ -43,7 +52,22 @@ public class PortManager implements Runnable {
             return allValues[ordinal() + 1];
         }
     }
+    private enum HangupState { 
+        None, Timer, AwaitingCommand, AwaitingConfirmation {
+            @Override
+            public HangupState next() {
+                return None;
+            };
+        };
+        
+        private static final HangupState[] allValues = values();
+        
+        public HangupState next() {
+            return allValues[ordinal() + 1];
+        }
+    }
     private ResponseState currentResponseState = ResponseState.None;
+    private HangupState currentHangupState = HangupState.None;
     
     public PortManager(PortSettings settings, MainApp parent) throws IOException {
         this.parent = parent;
@@ -92,22 +116,30 @@ public class PortManager implements Runnable {
     }
     
     public synchronized void hangUpCall() {
-        new Thread(new Runnable() {
+        currentHangupState = HangupState.Timer;
+        
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                port.clearDTR(); // hangUp
-                parent.callStatusChanged(false);
+                sendRawData("+++");
+                currentHangupState = HangupState.AwaitingCommand;
             }
-        }).start();
+        }, 1200);
+        
+        new Timer().schedule(new TimerTask() { // timeout
+            @Override
+            public void run() {
+                currentHangupState = HangupState.None;
+            }
+        }, 4000);
     }
     
     public synchronized boolean sendMessageNonBlocking(String message) {
-        if (port.isOpen()) {
+        if (port.isOpen() && currentHangupState != HangupState.None) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String sanitizedMessage = message.replace("\r", "CARRIAGE_CYPHER");
-                    sanitizedMessage = sanitizedMessage.replace("\n", "LINE_FEED_CYPHER");
+                    String sanitizedMessage = sanitizeString(message);
                     sendMessage(sanitizedMessage);
                 }
             }).start();
@@ -145,6 +177,8 @@ public class PortManager implements Runnable {
         OutputStreamWriter strWriter = new OutputStreamWriter(stream, StandardCharsets.UTF_8);
         
         try {
+            System.out.println("Cmd:" + command);
+            
             strWriter.write(command);
             strWriter.flush();
             return true;
@@ -182,14 +216,34 @@ public class PortManager implements Runnable {
     }
     
     private void classifyAndProcessData(String receivedString) {
-        System.out.println(receivedString);
+        System.out.println("Msg:" + receivedString);
 
+        if (receivedString.startsWith("AT")) { // assume echo
+            skipingEchoInProgress = true;
+        }
+        
+        if (skipingEchoInProgress && receivedString.contains("\r")) { // end of echo
+            skipingEchoInProgress = false;
+            int position = receivedString.indexOf("\r");
+            receivedString = receivedString.substring(position + 1, receivedString.length());
+        }
+        
+        if (skipingEchoInProgress) {
+            return;
+        }
+        
+        
         int index = -1;
         while ((index = receivedString.indexOf("\r", ++index)) != -1) {
             currentResponseState = currentResponseState.next();
         }
         while ((index = receivedString.indexOf("\n", ++index)) != -1) {
             currentResponseState = currentResponseState.next();
+            
+            if (currentResponseState == ResponseState.None) {
+                receivedResponseBuffer = "";
+                receivedString = "";
+            }
         }
 
         if (currentResponseState != ResponseState.None) {
@@ -215,16 +269,25 @@ public class PortManager implements Runnable {
             receivedResponseBuffer = "";
             currentResponseState = currentResponseState.next();
             
-        } else if (receivedResponseBuffer.contains(CALL_DROPPED)) {
-            parent.callStatusChanged(false);
+        } else if (receivedResponseBuffer.contains(CALL_DROPPED) ||
+                   receivedResponseBuffer.contains(CONNECT_CMD_FAILED)) {
             receivedMessageBuffer = "";
             receivedResponseBuffer = "";
             currentResponseState = currentResponseState.next();
+            currentHangupState = HangupState.None;
+            parent.callStatusChanged(false);
             
         } else if (receivedResponseBuffer.contains(MODEM_NORMAL_RESPONSE)) {
             receivedResponseBuffer = "";
             currentResponseState = currentResponseState.next();
             
+            if (currentHangupState == HangupState.AwaitingCommand) {
+                currentHangupState = HangupState.AwaitingConfirmation;
+                sendRawData("ATH" + '\r');
+            } else if (currentHangupState == HangupState.AwaitingConfirmation) {
+                currentHangupState = HangupState.None;
+                parent.callStatusChanged(false);
+            }
         } else if (receivedResponseBuffer.contains(MODEM_ERROR_RESPONSE)) {
             receivedResponseBuffer = "";
             currentResponseState = currentResponseState.next();
@@ -238,8 +301,7 @@ public class PortManager implements Runnable {
     }
     
     private void processReceivedMessage(String receivedString) {
-        String desanitizedMessage = receivedString.replace("CARRIAGE_CYPHER", "\r");
-        desanitizedMessage = desanitizedMessage.replace("LINE_FEED_CYPHER", "\n");
+        String desanitizedMessage = desanitizeString(receivedString);
         receivedMessageBuffer += desanitizedMessage;
         
         if (receivedMessageBuffer.contains(END_MESSAGE_SEQUENCE)) {
@@ -289,6 +351,22 @@ public class PortManager implements Runnable {
         }
         
         return chosenPort;
+    }
+    
+    private String sanitizeString(String stringToChange) {
+        String sanitizedString = stringToChange.replace("\r", CARRIAGE_CYPHER);
+        sanitizedString = sanitizedString.replace("\n", LINE_FEED_CYPHER);
+        sanitizedString = sanitizedString.replace("AT", CMD_CYPHER);
+        
+        return sanitizedString;
+    }
+    
+    private String desanitizeString(String stringToChange) {
+        String desanitizedString = stringToChange.replace(CARRIAGE_CYPHER, "\r");
+        desanitizedString = desanitizedString.replace(LINE_FEED_CYPHER, "\n");
+        desanitizedString = desanitizedString.replace(CMD_CYPHER, "AT");
+        
+        return desanitizedString;
     }
 
     @Override
