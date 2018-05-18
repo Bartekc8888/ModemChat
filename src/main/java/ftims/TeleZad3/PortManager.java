@@ -135,7 +135,7 @@ public class PortManager implements Runnable {
     }
     
     public synchronized boolean sendMessageNonBlocking(String message) {
-        if (port.isOpen() && currentHangupState != HangupState.None) {
+        if (port.isOpen() && currentHangupState == HangupState.None) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -267,6 +267,7 @@ public class PortManager implements Runnable {
         } else if (receivedResponseBuffer.contains(PHONE_CALL_ESTABLISHED)) {
             parent.callStatusChanged(true);
             receivedResponseBuffer = "";
+            receivedMessageBuffer = "";
             currentResponseState = currentResponseState.next();
             
         } else if (receivedResponseBuffer.contains(CALL_DROPPED) ||

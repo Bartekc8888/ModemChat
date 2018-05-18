@@ -226,6 +226,11 @@ public class MainApp extends Application
 
         } catch (IOException e) {
             e.printStackTrace();
+            
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Błąd łączenia");
+            alert.setContentText("Nie udało się połączyć z modemem");
+            alert.showAndWait();
         }
     }
     
